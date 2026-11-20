@@ -72,17 +72,19 @@
 @keyframes dmPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(233, 162, 59, .55); } 50% { box-shadow: 0 0 0 10px rgba(233, 162, 59, 0); } }
 
 /* Scène */
-.dm-stage { position: relative; border-radius: 22px; min-height: 600px; padding: 24px; display: flex; align-items: center; justify-content: center; gap: 28px;
+/* La scène est toujours une rangée qui passe à la ligne (flex-wrap) : jamais de colonne flex,
+   que Safari (iPhone) écrase quand un enfant a « flex: 1 ». min-width: 0 l'empêche de déborder de la grille. */
+.dm-stage { position: relative; min-width: 0; border-radius: 22px; min-height: 600px; padding: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 28px;
   background: radial-gradient(60% 60% at 50% 40%, rgba(89, 192, 131, .16), transparent 70%), rgba(255, 255, 255, .02); border: 1px solid rgba(168, 239, 198, .08); }
 .dm-poster, .dm-pos { display: none; }
 [data-step="join"] .dm-poster { display: block; }
 [data-step="counter"] .dm-pos, [data-step="reward"] .dm-pos, [data-step="dash"] .dm-pos { display: flex; }
 [data-step="dash"] .dm-phone { display: none; }
-[data-step="counter"] .dm-phone, [data-step="reward"] .dm-phone { width: 250px; height: 510px; border-radius: 40px; }
-[data-step="counter"] .dm-stage, [data-step="reward"] .dm-stage { justify-content: space-between; }
+[data-step="counter"] .dm-phone, [data-step="reward"] .dm-phone { width: min(250px, 100%); border-radius: 40px; }
+[data-step="counter"] .dm-pos, [data-step="reward"] .dm-pos { order: -1; }
 
 /* Téléphone */
-.dm-phone { position: relative; flex: none; width: 290px; height: 590px; border-radius: 46px; background: #0b0f0d; padding: 11px; box-shadow: 0 0 0 2px #26332c, 0 30px 80px rgba(0, 0, 0, .55), 0 0 90px rgba(89, 192, 131, .15); transition: width .35s, height .35s; }
+.dm-phone { position: relative; flex: none; width: min(290px, 100%); aspect-ratio: 290 / 590; border-radius: 46px; background: #0b0f0d; padding: 11px; box-shadow: 0 0 0 2px #26332c, 0 30px 80px rgba(0, 0, 0, .55), 0 0 90px rgba(89, 192, 131, .15); transition: width .35s, height .35s; }
 .ph-notch { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 86px; height: 24px; border-radius: 14px; background: #0b0f0d; z-index: 5; }
 .ph-screen { position: relative; height: 100%; border-radius: 36px; overflow: hidden; background: var(--canvas); color: var(--text); }
 .ph-view { position: absolute; inset: 0; overflow-y: auto; scrollbar-width: none; display: none; }
@@ -184,7 +186,7 @@
 .dc-reward { direction: rtl; font-family: var(--font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* Affiche du comptoir */
-.dm-poster { flex: none; width: 230px; border-radius: 16px; overflow: hidden; background: #fff; color: var(--text); box-shadow: 0 30px 70px rgba(0, 0, 0, .5); transform: rotate(-3deg); cursor: pointer; transition: transform .4s, box-shadow .4s; }
+.dm-poster { flex: none; width: min(230px, 100%); border-radius: 16px; overflow: hidden; background: #fff; color: var(--text); box-shadow: 0 30px 70px rgba(0, 0, 0, .5); transform: rotate(-3deg); cursor: pointer; transition: transform .4s, box-shadow .4s; }
 .dm-poster.target { transform: rotate(-1deg) scale(1.03); box-shadow: 0 0 0 4px var(--leaf), 0 30px 70px rgba(0, 0, 0, .5); }
 .pst-head { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 12px 12px; text-align: center; }
 .pst-head small { font-size: 11px; opacity: .8; }
@@ -197,8 +199,9 @@
 .pst-rule { margin: 10px 12px 14px; font-size: 11px; text-align: center; color: var(--muted); background: var(--canvas); border-radius: 8px; padding: 6px; }
 
 /* Application du commerçant */
-.dm-pos { position: relative; flex: 1; min-width: 0; max-width: 560px; height: 560px; flex-direction: column; border-radius: 20px; overflow: hidden; background: var(--canvas); color: var(--text); box-shadow: 0 30px 80px rgba(0, 0, 0, .5), 0 0 0 1px rgba(255, 255, 255, .08); direction: rtl; }
-[data-step="dash"] .dm-pos { max-width: none; height: 600px; }
+.dm-pos { position: relative; flex: 1 1 340px; min-width: 0; max-width: 560px; height: 560px; flex-direction: column; border-radius: 20px; overflow: hidden; background: var(--canvas); color: var(--text); box-shadow: 0 30px 80px rgba(0, 0, 0, .5), 0 0 0 1px rgba(255, 255, 255, .08); direction: rtl; }
+[data-step="dash"] .dm-pos { flex-basis: 100%; max-width: none; height: 600px; }
+.pd-box { overflow-x: auto; }
 .pos-bar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #fff; border-bottom: 1px solid var(--line); flex: none; }
 .pos-logo { width: 32px; height: 32px; border-radius: 9px; font-size: 12px; }
 .pos-bar > b { font-size: 14px; white-space: nowrap; }
@@ -326,7 +329,7 @@
 .pip-card .dc-num, .pip-card .dc-reward { display: none; }
 .pip-txt { display: block; font-size: 11.5px; margin-top: 5px; color: rgba(255, 255, 255, .82); }
 .pip-txt b { color: #fff; }
-@media (max-width: 1020px) {
+@media (max-width: 1100px) {
   .dm-pip { display: block; }
   .dm-pip.show { opacity: 1; transform: none; pointer-events: auto; }
 }
@@ -339,11 +342,10 @@
 @media (max-width: 1240px) {
   [data-step="counter"] .pos-user, [data-step="reward"] .pos-user { display: none; }
 }
-@media (max-width: 1020px) {
-  .dm-body { grid-template-columns: 1fr; }
+@media (max-width: 1100px) {
+  .dm-body { grid-template-columns: minmax(0, 1fr); }
   .dm-panel { min-height: 0; }
   .dm-stage { min-height: 0; }
-  [data-step="counter"] .dm-stage, [data-step="reward"] .dm-stage { justify-content: center; flex-wrap: wrap; }
 }
 @media (max-width: 760px) {
   .demo { padding: 72px 0; }
@@ -354,13 +356,17 @@
   .dm-step { width: auto; }
   .dm-panel { padding: 20px 16px; }
   .dm-panel h3 { font-size: 20px; }
-  .dm-stage { padding: 18px 10px; flex-direction: column; gap: 22px; }
-  [data-step="join"] .dm-stage { flex-direction: column-reverse; }
-  [data-step="counter"] .dm-pos, [data-step="reward"] .dm-pos { order: -1; }
-  .dm-poster { width: 200px; }
-  .dm-phone { width: 270px; height: 550px; }
-  [data-step="counter"] .dm-phone, [data-step="reward"] .dm-phone { width: 230px; height: 470px; }
-  .dm-pos, [data-step="dash"] .dm-pos { width: 100%; max-width: none; height: 540px; }
+  .dm-stage { padding: 18px 10px; gap: 22px; }
+  [data-step="join"] .dm-phone { order: -1; }
+  .dm-poster { width: min(200px, 100%); }
+  .dm-phone { width: min(270px, 100%); }
+  [data-step="counter"] .dm-phone, [data-step="reward"] .dm-phone { width: min(230px, 80%); }
+  /* Sur téléphone, l'écran du commerçant prend toute la largeur et la hauteur de son contenu (pas de défilement imbriqué) */
+  .dm-pos, [data-step="dash"] .dm-pos { flex: 1 1 100%; width: 100%; max-width: none; height: auto; min-height: 460px; }
+  .pos-view { flex: none; overflow: visible; padding: 14px; }
+  .pos-bar { padding: 10px 12px; gap: 8px; }
+  .pos-tabs { margin-inline-start: 4px; }
+  .pos-tabs span { padding: 5px 9px; }
   .pos-user { display: none; }
   .pcu-grid { grid-template-columns: 1fr; }
   .pd-kpis { grid-template-columns: repeat(2, 1fr); }

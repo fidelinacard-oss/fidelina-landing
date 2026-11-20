@@ -257,9 +257,9 @@
      une petite carte reste visible en haut et rebondit à chaque changement. Un appui ramène au téléphone. */
   const pip = $('.dm-pip');
   const vis = { root: false, phone: false };
-  const narrow = () => innerWidth <= 1020;
+  const narrow = () => innerWidth <= 1100;
   function syncPip() {
-    const on = narrow() && vis.root && !vis.phone && S.step <= 4 && phone.dataset.view !== 'camera' && phone.dataset.view !== 'camera-idle';
+    const on = narrow() && vis.root && !vis.phone && S.step <= 4 && phone.dataset.view !== 'camera' && phone.dataset.view !== 'camera-idle' && $('.pos-modal').hidden;
     pip.classList.toggle('show', on);
   }
   if ('IntersectionObserver' in window) {
@@ -325,7 +325,7 @@
     requestAnimationFrame(tick);
   }
   // Sur un écran étroit, la scène est sous le panneau : on la ramène à l'écran avant une animation
-  const showStage = (el = stage) => { if (innerWidth <= 1020) el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' }); };
+  const showStage = (el = stage) => { if (innerWidth <= 1100) el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' }); };
   const bump = (el) => el && el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.06)' }, { transform: 'scale(1)' }], { duration: 380, easing: 'ease-out' });
   async function typeInto(input, text, ms = 55) {
     input.value = ''; input.focus({ preventScroll: true });
@@ -547,9 +547,9 @@
       b.addEventListener('click', () => { SFX.key(); pick = r; $$('.pm-r', m).forEach((x) => x.classList.remove('on')); b.classList.add('on'); const y = $('.pm-yes', m); y.disabled = false; y.innerHTML = `أكّد · <span class="lat">-${fmt(r.pts)}</span> ${unitWord(r.pts)}`; });
       list.appendChild(b);
     });
-    $('.pm-no', m).addEventListener('click', () => { SFX.click(); m.hidden = true; });
+    $('.pm-no', m).addEventListener('click', () => { SFX.click(); m.hidden = true; syncPip(); });
     $('.pm-yes', m).addEventListener('click', () => pick && redeem(pick));
-    m.hidden = false; m.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
+    m.hidden = false; syncPip(); m.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
     $('.pm-box', m).animate([{ transform: 'translateY(18px) scale(.97)' }, { transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.2,.8,.2,1)' });
   }
   async function redeem(r) {
@@ -559,7 +559,7 @@
     addTx('redeem', -r.pts, { reward: r.name });
     SFX.gift();
     $('.pm-box', m).innerHTML = `<div class="pm-done"><span class="pm-ok">✓</span><h5>الهدية تسجّلات</h5><p><bdi>${esc(firstName())}</bdi> خدا <b>${esc(r.name)}</b>.<br>العملية مسجّلة بسمية <b class="lat">Salma</b>، وما كتتمسحش.</p><button type="button" class="dbtn dbtn-main pm-close">مزيان</button></div>`;
-    $('.pm-close', m).addEventListener('click', () => { SFX.click(); m.hidden = true; });
+    $('.pm-close', m).addEventListener('click', () => { SFX.click(); m.hidden = true; syncPip(); });
     confetti(phone.hidden ? pos : phone); setTimeout(() => confetti(pos, 24), 250);
     updateCust(); updateCardView(); bump($('.pc-card .dc'));
     toast(`🎉 <bdi>${esc(firstName())}</bdi> خدا ${esc(r.name)}`, 'gift');
